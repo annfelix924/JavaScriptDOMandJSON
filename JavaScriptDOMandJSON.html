@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>JavaScript-DOMandJSON</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+        <style>
+            h1{
+                width: auto;
+                height: 20px;
+                display: flex;
+                justify-content: center;
+                font-size: 50px;
+                margin-bottom: 80px;
+                margin-left: 50px;
+            }
+        </style>
+
+    
+</head>
+
+<body>
+    <div>
+        <h1>2021 年全球晶圓代工市率</h1>
+    </div>
+    <div id="container">
+        <canvas id="myChart"></canvas>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+        </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+        integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+        </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.1/dist/chart.min.js"></script>
+
+
+    <script>
+        let Global = {
+            Titles: ['排名', '公司', '國別', '市占率%'],
+            ranking: [
+                { rank: 1, company: "台積電", country: "台灣", marketshare: 53.1 },
+                { rank: 2, company: "三星電子", country: "韓國", marketshare: 17.3 },
+                { rank: 3, company: "聯電", country: "台灣", marketshare: 7.2 },
+                { rank: 4, company: "格羅方德", country: "美國", marketshare: 6.1 },
+                { rank: 5, company: "中芯國際", country: "中國", marketshare: 5.3 },
+                { rank: 6, company: "華虹半導體", country: "中國", marketshare: 2.6 },
+                { rank: 7, company: "力積電", country: "台灣", marketshare: 1.8 },
+                { rank: 8, company: "世界先進", country: "台灣", marketshare: 1.4 },
+                { rank: 9, company: "高塔半導體", country: "以色列", marketshare: 1.4 },
+                { rank: 10, company: "東部高科", country: "南韓", marketshare: 1 },
+            ]
+        };
+
+        let GlobaldArray = [];
+
+
+        let container;
+        let table, thead, tbody;
+
+        window.onload = function () {
+            container = document.getElementById('container');
+            table = document.createElement('table');
+            table.setAttribute("class", "table table-bordered table-striped table-dark");
+            thead = document.createElement('thead');
+            tbody = document.createElement('tbody');
+
+            CreateThead(Global.Titles);
+
+            //Object-->2D Array
+
+            Global.ranking.forEach(country => {
+                let values = Object.values(country);
+                GlobaldArray.push(values);
+            });
+
+            CreateTbody(GlobaldArray);
+
+            drawDoughnutChart();
+        }
+
+
+
+        function CreateThead(titleArray) {
+            //(1)
+            let theadTR = document.createElement("tr");
+            //(2)建立th,設定資料,th加入tr
+            titleArray.forEach((title, index) => {
+                let th = document.createElement("th");
+                th.innerText = title;
+                theadTR.append(th);
+            });
+
+            thead.append(theadTR);
+            table.append(thead);
+            container.append(table);
+        }
+
+        function CreateTbody(Global) {
+            Global.forEach(country => {
+                let tr = document.createElement("tr");
+                //(2)建立td,設定資料,td加入tr
+                //['台灣', 41, 1, 12]
+                country.forEach(columndata => {
+                    let td = document.createElement("td");
+                    td.innerText = columndata;
+
+                    tr.append(td);
+                });
+                tbody.append(tr);
+            });
+
+            table.append(tbody);
+        }
+        function drawDoughnutChart() {
+            // 獲取canvas元素
+            let ctx = document.getElementById('myChart').getContext('2d');
+            // 設置圖表數據
+            let data = {
+                labels: Global.ranking.map(country => country.company),
+                datasets: [{
+                    data: Global.ranking.map(country => country.marketshare),
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#E7E9ED',
+                        '#4BC0C0',
+                        '#FFA07A',
+                        '#9966CC',
+                        '#C71585',
+                        '#F0E68C',
+                        '#ADD8E6'
+                    ]
+                }]
+            };
+
+            let options = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'left'
+                    }
+                },
+                aspectRatio: 2
+            };
+
+            let myChart = new Chart(ctx, {
+                type: 'pie',
+                data: data,
+                options: options
+            });
+        }
+    </script>
+    <script>
+
+
+    </script>
+</body>
+
+</html>
